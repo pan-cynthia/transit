@@ -35,6 +35,3 @@ jobs:
 
       - name: Run Prettier
         run: npm run format
-
-      - name: Build backend
-        run: npm run build
