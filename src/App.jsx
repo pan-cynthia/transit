@@ -1,6 +1,10 @@
+import { Route, Routes } from 'react-router-dom';
+
 const App = () => {
   return (
-    <div>Transit</div>
+    <Routes>
+      <Route path="/" />
+    </Routes>
   );
 };
 
