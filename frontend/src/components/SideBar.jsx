@@ -1,10 +1,10 @@
 import RouteCard from './RouteCard';
 
-const SideBar = ({ stops }) => {
+const SideBar = ({ nearbyStops }) => {
   return (
     <div className="w-1/3 bg-amber-100 p-5 overflow-y-scroll">
       <h1 className="text-2xl font-bold mb-5">Nearby Routes</h1>
-      {stops.slice(0, 5).map((stop) => {
+      {nearbyStops.map((stop) => {
         return <RouteCard key={stop.id} name={stop.Name} />;
       })}
     </div>

@@ -4,7 +4,7 @@ import SideBar from '../components/SideBar';
 
 const Home = () => {
   const [_, setUserLocation] = useState(null);
-  const [stops, setStops] = useState([]);
+  const [nearbyStops, setNearbyStops] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,8 +21,7 @@ const Home = () => {
 
   const getStops = async () => {
     try {
-      const response = await api.get('/stops');
-      setStops(response.data);
+      await api.get('/stops');
     } catch (error) {
       console.log(error);
     }
@@ -34,14 +33,24 @@ const Home = () => {
     }
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
-      console.log('User Location:', latitude, longitude);
       setUserLocation({ latitude, longitude });
+      try {
+        const response = await api.get('/nearby', {
+          params: {
+            latitude,
+            longitude,
+          },
+        });
+        setNearbyStops(response.data);
+      } catch (error) {
+        console.error(error);
+      }
     });
   };
 
   return (
     <div className="flex h-screen">
-      <SideBar stops={stops} />
+      <SideBar nearbyStops={nearbyStops} />
       <div className="w-2/3 m-5">Map</div>
     </div>
   );
