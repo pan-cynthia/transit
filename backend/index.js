@@ -1,5 +1,6 @@
 import cors from "cors";
 import express from "express";
+import transitRoutes from "./transitRoutes.js";
 
 const app = express();
 
@@ -9,6 +10,8 @@ app.use(
     credentials: true
   })
 );
+
+app.use("/api", transitRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running");
