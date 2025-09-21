@@ -9,7 +9,7 @@ const app = express.Router();
 
 let cachedStops = [];
 
-app.get("/stops", async (req, res) => {
+const getStops = async () => {
   try {
     const response = await axios.get("https://api.511.org/transit/stops", {
       params: {
@@ -18,12 +18,13 @@ app.get("/stops", async (req, res) => {
       }
     });
     cachedStops = response.data.Contents.dataObjects.ScheduledStopPoint;
-    res.json(cachedStops);
+    console.log("Cached stops");
   } catch (error) {
     console.log(error);
-    res.status(400).json({ error: "Failed to fetch stops" });
   }
-});
+};
+
+getStops(); // call once when server starts
 
 // return all stops less than 0.2 miles away from user
 app.get("/nearby", async (req, res) => {

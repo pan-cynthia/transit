@@ -9,7 +9,6 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await getStops();
         getUserLocation();
       } catch (error) {
         console.error(error);
@@ -18,14 +17,6 @@ const Home = () => {
 
     fetchData();
   }, []);
-
-  const getStops = async () => {
-    try {
-      await api.get('/stops');
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const getUserLocation = () => {
     if (!navigator.geolocation) {
