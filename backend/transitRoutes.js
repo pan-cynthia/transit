@@ -1,6 +1,7 @@
 import axios from "axios";
 import dotenv from "dotenv";
 import express from "express";
+import { haversineDistance } from "./distance.js";
 
 dotenv.config();
 
@@ -22,6 +23,29 @@ app.get("/stops", async (req, res) => {
     console.log(error);
     res.status(400).json({ error: "Failed to fetch stops" });
   }
+});
+
+// return all stops less than 0.2 miles away from user
+app.get("/nearby", async (req, res) => {
+  const { latitude, longitude } = req.query;
+  const userLat = parseFloat(latitude);
+  const userLong = parseFloat(longitude);
+  const nearbyStops = cachedStops
+    .map(stop => {
+      const dist = haversineDistance(
+        userLat,
+        userLong,
+        stop.Location.Latitude,
+        stop.Location.Longitude
+      );
+      return { ...stop, dist };
+    })
+    .filter(stop => {
+      return stop.dist <= 0.2;
+    })
+    .sort((a, b) => a.dist - b.dist);
+
+  res.json(nearbyStops);
 });
 
 export default app;
