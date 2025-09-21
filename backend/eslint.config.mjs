@@ -1,5 +1,5 @@
-import globals from "globals";
 import eslintPluginJs from "@eslint/js";
+import globals from "globals";
 
 export default [
   eslintPluginJs.configs.recommended,
