@@ -62,8 +62,10 @@ app.get("/stop/:stopId", async (req, res) => {
         }
       }
     );
+
     const visits =
       response.data.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit;
+
     const arrivals = visits.map(visit => {
       const journey = visit.MonitoredVehicleJourney;
       return {
@@ -73,7 +75,17 @@ app.get("/stop/:stopId", async (req, res) => {
         time: journey.MonitoredCall.ExpectedArrivalTime
       };
     });
-    res.json(arrivals);
+
+    const groups = arrivals.reduce((accumulator, arrival) => {
+      const line = arrival.line;
+      if (!accumulator[line]) {
+        accumulator[line] = []; // create new group
+      }
+      accumulator[line].push(arrival);
+      return accumulator;
+    }, {});
+
+    res.json(groups);
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: "Failed to fetch stop monitoring" });
