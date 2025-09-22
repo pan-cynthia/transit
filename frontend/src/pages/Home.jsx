@@ -42,7 +42,7 @@ const Home = () => {
   return (
     <div className="flex h-screen">
       <SideBar nearbyStops={nearbyStops} />
-      <div className="w-2/3 m-5">Map</div>
+      <div className="w-3/5 m-5">Map</div>
     </div>
   );
 };
