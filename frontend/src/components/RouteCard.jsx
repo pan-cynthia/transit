@@ -16,6 +16,9 @@ const RouteCard = ({ stop }) => {
     };
 
     fetchPredictions();
+
+    const interval = setInterval(fetchPredictions, 30000); // fetch predictions every 30 seconds
+    return () => clearInterval(interval);
   }, [stop.id]);
 
   return (
