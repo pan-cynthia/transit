@@ -49,4 +49,35 @@ app.get("/nearby", async (req, res) => {
   res.json(nearbyStops);
 });
 
+app.get("/stop/:stopId", async (req, res) => {
+  const { stopId } = req.params;
+  try {
+    const response = await axios.get(
+      "https://api.511.org/transit/stopMonitoring",
+      {
+        params: {
+          api_key: process.env.TRANSIT_API_KEY,
+          agency: "SF",
+          stopCode: stopId
+        }
+      }
+    );
+    const visits =
+      response.data.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit;
+    const arrivals = visits.map(visit => {
+      const journey = visit.MonitoredVehicleJourney;
+      return {
+        line: journey.LineRef,
+        name: journey.PublishedLineName,
+        destination: journey.DestinationName,
+        time: journey.MonitoredCall.ExpectedArrivalTime
+      };
+    });
+    res.json(arrivals);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: "Failed to fetch stop monitoring" });
+  }
+});
+
 export default app;
