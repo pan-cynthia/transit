@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
+import Map from '../components/Map';
 import SideBar from '../components/SideBar';
 
 const Home = () => {
-  const [_, setUserLocation] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
   const [nearbyStops, setNearbyStops] = useState([]);
 
   useEffect(() => {
@@ -42,7 +43,9 @@ const Home = () => {
   return (
     <div className="flex h-screen">
       <SideBar nearbyStops={nearbyStops} />
-      <div className="w-3/5 m-5">Map</div>
+      <div className="w-3/5 m-5">
+        <Map userLocation={userLocation}></Map>
+      </div>
     </div>
   );
 };
