@@ -92,4 +92,20 @@ app.get("/stop/:stopId", async (req, res) => {
   }
 });
 
+app.get("/lines", async (req, res) => {
+  try {
+    const response = await axios.get("https://api.511.org/transit/lines", {
+      params: {
+        api_key: process.env.TRANSIT_API_KEY,
+        operator_id: "SF"
+      }
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: "Failed to fetch lines" });
+  }
+});
+
 export default app;
