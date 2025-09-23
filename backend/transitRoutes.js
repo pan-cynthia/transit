@@ -108,7 +108,32 @@ app.get("/lines", async (req, res) => {
       };
     });
 
-    res.json(lines);
+    // check if id contains only letters
+    const isLettersOnly = id => /^[A-Z]+$/.test(id);
+
+    // letter only ids come before mixed number ids
+    const sortedLines = lines.sort((a, b) => {
+      const aLetters = isLettersOnly(a.id);
+      const bLetters = isLettersOnly(b.id);
+
+      // check if one id is letters only and the other one isn't
+      if (aLetters != bLetters) {
+        // both letters/numbers only
+        if (aLetters == true) {
+          // a is letters only, b is not
+          return -1; // a comes before b
+        }
+        return 1; // b comes before a
+      }
+
+      // within each group sort naturally
+      return a.id.localeCompare(b.id, undefined, {
+        numeric: true,
+        sensitivity: "base"
+      });
+    });
+
+    res.json(sortedLines);
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: "Failed to fetch lines" });
