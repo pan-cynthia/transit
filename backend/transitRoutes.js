@@ -140,4 +140,17 @@ app.get("/lines", async (req, res) => {
   }
 });
 
+// returns directions and all stops associated with specific line
+app.get("/patterns/:lineId", async (req, res) => {
+  const { lineId } = req.params;
+  const response = await axios.get("https://api.511.org/transit/patterns", {
+    params: {
+      api_key: process.env.TRANSIT_API_KEY,
+      operator_id: "SF",
+      line_id: lineId
+    }
+  });
+  res.json(response.data);
+});
+
 export default app;
