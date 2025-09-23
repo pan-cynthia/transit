@@ -4,6 +4,7 @@ import DropDown from '../components/DropDown';
 
 const Search = () => {
   const [lines, setLines] = useState([]);
+  const [selectedLine, setSelectedLine] = useState(null);
 
   useEffect(() => {
     const getLines = async () => {
@@ -24,7 +25,11 @@ const Search = () => {
         <h2 className="mt-7 p-5 text-xl font-medium">Find Stop by Route</h2>
         <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
           <label className="font-medium">Route</label>
-          <DropDown options={lines} />
+          <DropDown
+            options={lines}
+            value={selectedLine}
+            onChange={setSelectedLine}
+          />
         </div>
       </div>
     </div>
