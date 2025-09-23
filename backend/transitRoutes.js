@@ -101,7 +101,14 @@ app.get("/lines", async (req, res) => {
       }
     });
 
-    res.json(response.data);
+    const lines = response.data.map(line => {
+      return {
+        id: line.Id,
+        name: line.Name
+      };
+    });
+
+    res.json(lines);
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: "Failed to fetch lines" });
