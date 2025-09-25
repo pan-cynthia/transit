@@ -25,9 +25,9 @@ const RouteCard = ({ stop }) => {
     <>
       {/* only render one routecard per line, use other 2 predictions to display arrival times */}
       {Object.entries(routeInfo).map(([line, arrivals]) => (
-        <div key={line} className="rounded-lg bg-white mb-2 p-4">
-          <h2 className="font-bold text-lg mb-1">{stop.Name}</h2>
-          <h2 className="font-bold text-blue-900 mb-1">
+        <div key={line} className="mb-2 rounded-lg bg-white p-4">
+          <h2 className="mb-1 text-lg font-bold">{stop.Name}</h2>
+          <h2 className="mb-1 font-bold text-blue-900">
             {arrivals[0].line} {arrivals[0].name}
           </h2>
           <h3 className="text-sm">{arrivals[0].destination}</h3>

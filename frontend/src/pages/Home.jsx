@@ -43,7 +43,7 @@ const Home = () => {
   return (
     <div className="flex h-screen">
       <SideBar nearbyStops={nearbyStops} />
-      <div className="w-3/5 m-5">
+      <div className="m-5 w-3/5">
         <Map userLocation={userLocation}></Map>
       </div>
     </div>
