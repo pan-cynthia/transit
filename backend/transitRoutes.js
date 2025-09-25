@@ -140,7 +140,7 @@ app.get("/lines", async (req, res) => {
   }
 });
 
-// returns directions and all stops associated with specific line
+// returns direction name associated with specific line
 app.get("/patterns/:lineId", async (req, res) => {
   const { lineId } = req.params;
   const response = await axios.get("https://api.511.org/transit/patterns", {
@@ -150,7 +150,28 @@ app.get("/patterns/:lineId", async (req, res) => {
       line_id: lineId
     }
   });
-  res.json(response.data);
+
+  const patterns = response.data.journeyPatterns;
+
+  const inbound = patterns
+    .filter(pattern => pattern.DirectionRef === "IB")
+    .map(pattern => pattern.Name)
+    .filter((item, index, self) => {
+      return self.indexOf(item) === index;
+    });
+
+  const outbound = patterns
+    .filter(pattern => pattern.DirectionRef === "OB")
+    .map(pattern => pattern.Name)
+    .filter((item, index, self) => {
+      return self.indexOf(item) === index;
+    });
+
+  res.json(
+    [...inbound, ...outbound].map(name => ({
+      name: name
+    }))
+  );
 });
 
 export default app;
