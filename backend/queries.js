@@ -19,4 +19,22 @@ router.get("/routes", async (req, res) => {
   }
 });
 
+router.get("/trips/:routeId", async (req, res) => {
+  const { routeId } = req.params;
+  try {
+    const query = `
+      SELECT DISTINCT direction_id, MIN(trip_headsign) AS trip_headsign
+      FROM trips
+      WHERE route_id = $1
+      GROUP BY direction_id
+      ORDER BY direction_id
+    `;
+    const response = await pool.query(query, [routeId]);
+    res.json(response.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+});
+
 export default router;

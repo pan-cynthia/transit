@@ -5,6 +5,8 @@ import DropDown from '../components/DropDown';
 const Search = () => {
   const [routes, setRoutes] = useState([]);
   const [selectedRoute, setSelectedRoute] = useState('');
+  const [directions, setDirections] = useState([]);
+  const [selectedDirection, setSelectedDirection] = useState('');
 
   useEffect(() => {
     // get all routes
@@ -19,6 +21,22 @@ const Search = () => {
     };
     getRoutes();
   }, []);
+
+  useEffect(() => {
+    if (!selectedRoute) return;
+    // get all directions for selected route
+    const getDirections = async () => {
+      try {
+        const response = await api.get(`/trips/${selectedRoute}`);
+        setDirections(response.data);
+        setSelectedDirection(response.data[0].direction_id); // set default direction
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getDirections();
+  }, [selectedRoute]);
 
   return (
     <div className="mx-auto flex h-screen w-3/5 flex-col justify-center">
@@ -35,6 +53,17 @@ const Search = () => {
             getOptionLabel={(route) =>
               `${route.route_short_name} ${route.route_long_name}`
             }
+          />
+        </div>
+        <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
+          <label className="font-medium">Direction</label>
+          <DropDown
+            options={directions}
+            value={selectedDirection}
+            onChange={setSelectedDirection}
+            getOptionKey={(direction) => direction.direction_id}
+            getOptionValue={(direction) => direction.direction_id}
+            getOptionLabel={(direction) => direction.trip_headsign}
           />
         </div>
       </div>
