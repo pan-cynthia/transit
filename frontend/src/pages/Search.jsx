@@ -30,6 +30,11 @@ const Search = () => {
             options={routes}
             value={selectedRoute}
             onChange={setSelectedRoute}
+            getOptionKey={(route) => route.route_id}
+            getOptionValue={(route) => route.route_id}
+            getOptionLabel={(route) =>
+              `${route.route_short_name} ${route.route_long_name}`
+            }
           />
         </div>
       </div>

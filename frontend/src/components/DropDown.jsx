@@ -1,9 +1,16 @@
-const DropDown = ({ options, value, onChange }) => {
+const DropDown = ({
+  options,
+  value,
+  onChange,
+  getOptionKey,
+  getOptionValue,
+  getOptionLabel,
+}) => {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)}>
       {options.map((option) => (
-        <option key={option.route_id} value={option.route_id}>
-          {option.route_short_name} {option.route_long_name}
+        <option key={getOptionKey(option)} value={getOptionValue(option)}>
+          {getOptionLabel(option)}
         </option>
       ))}
     </select>
