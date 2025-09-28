@@ -3,39 +3,22 @@ import api from '../api/axios';
 import DropDown from '../components/DropDown';
 
 const Search = () => {
-  const [lines, setLines] = useState([]);
-  const [selectedLine, setSelectedLine] = useState(null);
-  const [directions, setDirections] = useState([]);
-  const [selectedDirection, setSelectedDirection] = useState(null);
+  const [routes, setRoutes] = useState([]);
+  const [selectedRoute, setSelectedRoute] = useState('');
 
   useEffect(() => {
-    const getLines = async () => {
+    // get all routes
+    const getRoutes = async () => {
       try {
-        const response = await api.get('/lines');
-        setLines(response.data);
+        const response = await api.get('/routes');
+        setRoutes(response.data);
+        setSelectedRoute(response.data[0].route_id); // set default route
       } catch (error) {
         console.error(error);
       }
     };
-
-    getLines();
+    getRoutes();
   }, []);
-
-  useEffect(() => {
-    if (!selectedLine) return;
-
-    // user selected a line, fetch all directions
-    const getDirections = async () => {
-      try {
-        const response = await api.get(`/patterns/${selectedLine}`);
-        setDirections(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    getDirections();
-  }, [selectedLine]);
 
   return (
     <div className="mx-auto flex h-screen w-3/5 flex-col justify-center">
@@ -44,19 +27,9 @@ const Search = () => {
         <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
           <label className="font-medium">Route</label>
           <DropDown
-            options={lines}
-            value={selectedLine}
-            onChange={setSelectedLine}
-            type="line"
-          />
-        </div>
-        <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
-          <label className="font-medium">Direction</label>
-          <DropDown
-            options={directions}
-            value={selectedDirection}
-            onChange={setSelectedDirection}
-            type="direction"
+            options={routes}
+            value={selectedRoute}
+            onChange={setSelectedRoute}
           />
         </div>
       </div>

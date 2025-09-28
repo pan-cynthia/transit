@@ -1,5 +1,6 @@
 import cors from "cors";
 import express from "express";
+import router from "./queries.js";
 import transitRoutes from "./transitRoutes.js";
 
 const app = express();
@@ -11,7 +12,8 @@ app.use(
   })
 );
 
-app.use("/api", transitRoutes);
+app.use("/api", transitRoutes); // 511 API
+app.use("/api", router); // db queries
 
 app.get("/", (req, res) => {
   res.send("API is running");
