@@ -7,6 +7,8 @@ const Search = () => {
   const [selectedRoute, setSelectedRoute] = useState('');
   const [directions, setDirections] = useState([]);
   const [selectedDirection, setSelectedDirection] = useState('');
+  const [stops, setStops] = useState([]);
+  const [selectedStop, setSelectedStop] = useState('');
 
   useEffect(() => {
     // get all routes
@@ -29,7 +31,7 @@ const Search = () => {
       try {
         const response = await api.get(`/trips/${selectedRoute}`);
         setDirections(response.data);
-        setSelectedDirection(response.data[0].direction_id); // set default direction
+        setSelectedDirection(response.data[0].direction_id);
       } catch (error) {
         console.error(error);
       }
@@ -37,6 +39,24 @@ const Search = () => {
 
     getDirections();
   }, [selectedRoute]);
+
+  useEffect(() => {
+    if (!selectedRoute || !selectedDirection) return;
+    // get all stops for selected route and direction
+    const getStops = async () => {
+      try {
+        const response = await api.get(
+          `/stops/${selectedRoute}/${selectedDirection}`
+        );
+        setStops(response.data);
+        setSelectedStop(response.data[0].stop_id);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getStops();
+  }, [selectedRoute, selectedDirection]);
 
   return (
     <div className="mx-auto flex h-screen w-3/5 flex-col justify-center">
@@ -64,6 +84,17 @@ const Search = () => {
             getOptionKey={(direction) => direction.direction_id}
             getOptionValue={(direction) => direction.direction_id}
             getOptionLabel={(direction) => direction.trip_headsign}
+          />
+        </div>
+        <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
+          <label className="font-medium">Stop</label>
+          <DropDown
+            options={stops}
+            value={selectedStop}
+            onChange={setSelectedStop}
+            getOptionKey={(stop) => stop.stop_id}
+            getOptionValue={(stop) => stop.stop_id}
+            getOptionLabel={(stop) => stop.stop_name}
           />
         </div>
       </div>
