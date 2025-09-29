@@ -40,28 +40,29 @@ router.get("/trips/:routeId", async (req, res) => {
 router.get("/stops/:routeId/:directionId", async (req, res) => {
   const { routeId, directionId } = req.params;
   try {
-    // get trip_id of longest trip (most stops)
-    const query1 = `
-      SELECT t.trip_id FROM trips t
-      JOIN stop_times st ON t.trip_id = st.trip_id
-      WHERE route_id = $1 AND direction_id = $2
-      GROUP BY t.trip_id
-      ORDER BY COUNT(st.stop_id) DESC
-      LIMIT 1;
-    `;
-    // use stop list of longest trip
-    const query2 = `
-      SELECT DISTINCT ON (st.stop_sequence) st.stop_sequence, st.stop_id, s.stop_name
+    // find longest trip and use its stop list
+    const query = `
+      WITH longest_trip AS (
+        SELECT t.trip_id
+        FROM trips t
+        JOIN stop_times st ON t.trip_id = st.trip_id
+        WHERE t.route_id = $1 AND t.direction_id = $2
+        GROUP BY t.trip_id
+        ORDER BY COUNT(st.stop_id) DESC
+        LIMIT 1
+      )
+      SELECT DISTINCT ON (st.stop_sequence)
+        st.stop_sequence,
+        st.stop_id,
+        s.stop_name
       FROM stop_times st
       JOIN stops s ON st.stop_id = s.stop_id
-      WHERE st.trip_id = $1
+      JOIN longest_trip lt ON st.trip_id = lt.trip_id
       ORDER BY st.stop_sequence, st.stop_id;
     `;
 
-    const response1 = await pool.query(query1, [routeId, directionId]);
-    const tripId = response1.rows[0].trip_id;
-    const response2 = await pool.query(query2, [tripId]);
-    res.json(response2.rows);
+    const response = await pool.query(query, [routeId, directionId]);
+    res.json(response.rows);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
