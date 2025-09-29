@@ -31,7 +31,13 @@ const Search = () => {
       try {
         const response = await api.get(`/trips/${selectedRoute}`);
         setDirections(response.data);
-        setSelectedDirection(response.data[0].direction_id);
+        /*
+         direction can either be 0 or 1 (outbound or inbound)
+         if direction is 0, then !selectedDirection will result in true and return
+         and the default stop doesn't get set until user selects something
+         need to typecast direction to string to avoid this
+         */
+        setSelectedDirection(String(response.data[0].direction_id)); // set default direction
       } catch (error) {
         console.error(error);
       }
