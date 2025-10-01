@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import { useRef } from 'react';
-import { MapContainer, Marker, TileLayer } from 'react-leaflet';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 const Map = ({ latitude, longitude, onChange, stops }) => {
   const markerRef = useRef(null);
@@ -43,12 +43,16 @@ const Map = ({ latitude, longitude, onChange, stops }) => {
           eventHandlers={{ dragend: handlePinDrag }}
           ref={markerRef}
           icon={userIcon}
-        />
+        >
+          <Popup>You are Here</Popup>
+        </Marker>
         {stops.map((stop) => (
           <Marker
             key={stop.id}
             position={[stop.Location.Latitude, stop.Location.Longitude]}
-          />
+          >
+            <Popup>{stop.Name}</Popup>
+          </Marker>
         ))}
       </MapContainer>
     </>
