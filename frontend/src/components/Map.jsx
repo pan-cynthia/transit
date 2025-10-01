@@ -2,7 +2,7 @@ import L from 'leaflet';
 import { useRef } from 'react';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 
-const Map = ({ latitude, longitude, onChange }) => {
+const Map = ({ latitude, longitude, onChange, stops }) => {
   const markerRef = useRef(null);
 
   if (!latitude || !longitude) return <p>Loading map...</p>;
@@ -44,6 +44,12 @@ const Map = ({ latitude, longitude, onChange }) => {
           ref={markerRef}
           icon={userIcon}
         />
+        {stops.map((stop) => (
+          <Marker
+            key={stop.id}
+            position={[stop.Location.Latitude, stop.Location.Longitude]}
+          />
+        ))}
       </MapContainer>
     </>
   );

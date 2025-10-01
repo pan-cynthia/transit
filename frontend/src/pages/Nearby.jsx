@@ -40,6 +40,7 @@ const Nearby = () => {
               latitude={pinLocation.latitude}
               longitude={pinLocation.longitude}
               onChange={setPinLocation}
+              stops={nearbyStops}
             ></Map>
           </div>
         </div>
