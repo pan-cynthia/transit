@@ -2,8 +2,7 @@ import RouteCard from './RouteCard';
 
 const NearbyRoutes = ({ nearbyStops }) => {
   return (
-    <div className="w-2/5 overflow-y-scroll bg-amber-100 p-5">
-      <h1 className="mb-5 text-2xl font-bold">Nearby Routes</h1>
+    <div className="w-2/5 overflow-y-scroll p-5">
       {nearbyStops.map((stop) => {
         return <RouteCard key={stop.id} stop={stop} />;
       })}
