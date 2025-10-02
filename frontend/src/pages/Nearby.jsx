@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import api from '../api/axios';
 import Map from '../components/Map';
-import SideBar from '../components/SideBar';
+import NearbyRoutes from '../components/NearbyRoutes';
 
 const Nearby = () => {
   const [nearbyStops, setNearbyStops] = useState([]);
@@ -34,7 +34,7 @@ const Nearby = () => {
     <>
       {nearbyStops && (
         <div className="flex h-screen">
-          <SideBar nearbyStops={nearbyStops} />
+          <NearbyRoutes nearbyStops={nearbyStops} />
           <div className="m-5 w-3/5">
             <Map
               latitude={pinLocation.latitude}

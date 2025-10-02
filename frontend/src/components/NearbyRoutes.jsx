@@ -1,6 +1,6 @@
 import RouteCard from './RouteCard';
 
-const SideBar = ({ nearbyStops }) => {
+const NearbyRoutes = ({ nearbyStops }) => {
   return (
     <div className="w-2/5 overflow-y-scroll bg-amber-100 p-5">
       <h1 className="mb-5 text-2xl font-bold">Nearby Routes</h1>
@@ -11,4 +11,4 @@ const SideBar = ({ nearbyStops }) => {
   );
 };
 
-export default SideBar;
+export default NearbyRoutes;
