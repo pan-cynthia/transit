@@ -64,6 +64,12 @@ const Search = () => {
     getStops();
   }, [selectedRoute, selectedDirection]);
 
+  const getPrediction = async () => {
+    // call 511 API for current prediction
+    const response = await api.get(`/stop/${selectedStop}`);
+    console.log(response.data);
+  };
+
   return (
     <div className="mx-auto flex h-screen w-3/5 flex-col justify-center">
       <div className="flex h-[80vh] flex-col items-center rounded-xl border-2 border-slate-600 bg-amber-100">
@@ -103,6 +109,12 @@ const Search = () => {
             getOptionLabel={(stop) => stop.stop_name}
           />
         </div>
+        <button
+          className="mt-7 w-25 cursor-pointer rounded-xl bg-amber-200 p-5 font-medium"
+          onClick={getPrediction}
+        >
+          Search
+        </button>
       </div>
     </div>
   );
