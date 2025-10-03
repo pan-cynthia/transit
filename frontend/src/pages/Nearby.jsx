@@ -9,7 +9,7 @@ import SideBar from '../components/SideBar';
 const Nearby = () => {
   const [nearbyStops, setNearbyStops] = useState([]);
   const location = useLocation();
-  const { latitude, longitude } = location.state;
+  const { latitude, longitude } = location.state || {};
   const [pinLocation, setPinLocation] = useState({
     latitude: latitude,
     longitude: longitude,
@@ -36,7 +36,7 @@ const Nearby = () => {
 
   return (
     <>
-      {nearbyStops && (
+      {pinLocation.latitude && pinLocation.longitude ? (
         <div className="flex h-screen">
           <SideBar
             isOpen={isSideBarOpen}
@@ -55,6 +55,19 @@ const Nearby = () => {
                 ></Map>
               </div>
             </div>
+          </div>
+        </div>
+      ) : (
+        <div className="flex h-screen">
+          <SideBar
+            isOpen={isSideBarOpen}
+            toggle={() => setIsSideBarOpen(!isSideBarOpen)}
+          />
+          <div className={`w-full ${isSideBarOpen ? 'ml-64' : 'ml-16'}`}>
+            <NavBar />
+            <h1 className="flex h-[calc(100vh-64px)] items-center justify-center text-lg">
+              Enable location for this site to view nearby departures
+            </h1>
           </div>
         </div>
       )}
