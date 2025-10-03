@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import DropDown from '../components/DropDown';
 import NavBar from '../components/NavBar';
+import SideBar from '../components/SideBar';
 
 const Search = () => {
   const [routes, setRoutes] = useState([]);
@@ -10,6 +11,8 @@ const Search = () => {
   const [selectedDirection, setSelectedDirection] = useState('');
   const [stops, setStops] = useState([]);
   const [selectedStop, setSelectedStop] = useState('');
+
+  const [isSideBarOpen, setIsSideBarOpen] = useState(true);
 
   useEffect(() => {
     // get all routes
@@ -73,51 +76,57 @@ const Search = () => {
 
   return (
     <>
-      <NavBar />
-      <div className="mx-auto flex h-[calc(100vh-64px)] w-3/5 flex-col justify-center">
-        <div className="flex h-[80vh] flex-col items-center rounded-xl border-2 border-amber-200 bg-amber-100">
-          <h2 className="mt-7 p-5 text-xl font-medium">Find Stop by Route</h2>
-          <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
-            <label className="font-medium">Route</label>
-            <DropDown
-              options={routes}
-              value={selectedRoute}
-              onChange={setSelectedRoute}
-              getOptionKey={(route) => route.route_id}
-              getOptionValue={(route) => route.route_id}
-              getOptionLabel={(route) =>
-                `${route.route_short_name} ${route.route_long_name}`
-              }
-            />
+      <SideBar
+        isOpen={isSideBarOpen}
+        toggle={() => setIsSideBarOpen(!isSideBarOpen)}
+      />
+      <div className={`${isSideBarOpen ? 'ml-64' : 'ml-16'}`}>
+        <NavBar />
+        <div className="mx-auto flex h-[calc(100vh-64px)] w-[80%] flex-col justify-center">
+          <div className="flex h-[80vh] flex-col items-center rounded-xl border-2 border-amber-200 bg-amber-100">
+            <h2 className="mt-7 p-5 text-xl font-medium">Find Stop by Route</h2>
+            <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
+              <label className="font-medium">Route</label>
+              <DropDown
+                options={routes}
+                value={selectedRoute}
+                onChange={setSelectedRoute}
+                getOptionKey={(route) => route.route_id}
+                getOptionValue={(route) => route.route_id}
+                getOptionLabel={(route) =>
+                  `${route.route_short_name} ${route.route_long_name}`
+                }
+              />
+            </div>
+            <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
+              <label className="font-medium">Direction</label>
+              <DropDown
+                options={directions}
+                value={selectedDirection}
+                onChange={setSelectedDirection}
+                getOptionKey={(direction) => direction.direction_id}
+                getOptionValue={(direction) => direction.direction_id}
+                getOptionLabel={(direction) => direction.trip_headsign}
+              />
+            </div>
+            <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
+              <label className="font-medium">Stop</label>
+              <DropDown
+                options={stops}
+                value={selectedStop}
+                onChange={setSelectedStop}
+                getOptionKey={(stop) => stop.stop_id}
+                getOptionValue={(stop) => stop.stop_id}
+                getOptionLabel={(stop) => stop.stop_name}
+              />
+            </div>
+            <button
+              className="mt-7 w-25 cursor-pointer rounded-xl bg-amber-200 p-5 font-medium"
+              onClick={getPrediction}
+            >
+              Search
+            </button>
           </div>
-          <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
-            <label className="font-medium">Direction</label>
-            <DropDown
-              options={directions}
-              value={selectedDirection}
-              onChange={setSelectedDirection}
-              getOptionKey={(direction) => direction.direction_id}
-              getOptionValue={(direction) => direction.direction_id}
-              getOptionLabel={(direction) => direction.trip_headsign}
-            />
-          </div>
-          <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
-            <label className="font-medium">Stop</label>
-            <DropDown
-              options={stops}
-              value={selectedStop}
-              onChange={setSelectedStop}
-              getOptionKey={(stop) => stop.stop_id}
-              getOptionValue={(stop) => stop.stop_id}
-              getOptionLabel={(stop) => stop.stop_name}
-            />
-          </div>
-          <button
-            className="mt-7 w-25 cursor-pointer rounded-xl bg-amber-200 p-5 font-medium"
-            onClick={getPrediction}
-          >
-            Search
-          </button>
         </div>
       </div>
     </>

@@ -4,6 +4,7 @@ import api from '../api/axios';
 import Map from '../components/Map';
 import NavBar from '../components/NavBar';
 import NearbyRoutes from '../components/NearbyRoutes';
+import SideBar from '../components/SideBar';
 
 const Nearby = () => {
   const [nearbyStops, setNearbyStops] = useState([]);
@@ -13,6 +14,8 @@ const Nearby = () => {
     latitude: latitude,
     longitude: longitude,
   });
+
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
   useEffect(() => {
     const getNearbyStops = async () => {
@@ -35,7 +38,11 @@ const Nearby = () => {
     <>
       {nearbyStops && (
         <div className="flex h-screen">
-          <div className="w-full">
+          <SideBar
+            isOpen={isSideBarOpen}
+            toggle={() => setIsSideBarOpen(!isSideBarOpen)}
+          />
+          <div className={`w-full ${isSideBarOpen ? 'ml-64' : 'ml-16'}`}>
             <NavBar />
             <div className="flex h-[calc(100vh-64px)] flex-1 overflow-hidden">
               <NearbyRoutes nearbyStops={nearbyStops} />
