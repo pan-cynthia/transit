@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import Map from '../components/Map';
 import NavBar from '../components/NavBar';
@@ -7,17 +7,43 @@ import NearbyRoutes from '../components/NearbyRoutes';
 import SideBar from '../components/SideBar';
 
 const Nearby = () => {
-  const [nearbyStops, setNearbyStops] = useState([]);
   const location = useLocation();
-  const { latitude, longitude } = location.state || {};
-  const [pinLocation, setPinLocation] = useState({
-    latitude: latitude,
-    longitude: longitude,
-  });
+  const navigate = useNavigate();
 
+  const { latitude, longitude } = location.state || {};
+  const [pinLocation, setPinLocation] = useState(
+    latitude && longitude
+      ? {
+          latitude,
+          longitude,
+        }
+      : null
+  );
+
+  const [nearbyStops, setNearbyStops] = useState([]);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
+  // if location is empty and location permissions are enabled and pinLocation is empty, get user location
   useEffect(() => {
+    if (!pinLocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setPinLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.log('Error getting user location', error);
+          navigate('/search');
+        }
+      );
+    }
+  }, [navigate, pinLocation]);
+
+  useEffect(() => {
+    if (!pinLocation) return;
+
     const getNearbyStops = async () => {
       try {
         const response = await api.get('/nearby', {
@@ -36,7 +62,7 @@ const Nearby = () => {
 
   return (
     <>
-      {pinLocation.latitude && pinLocation.longitude ? (
+      {pinLocation ? (
         <div className="flex h-screen">
           <SideBar
             isOpen={isSideBarOpen}
