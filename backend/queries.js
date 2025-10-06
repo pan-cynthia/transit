@@ -1,7 +1,49 @@
 import express from "express";
 import pool from "./db.js";
+import { haversineDistance } from "./distance.js";
 
 const router = express.Router();
+
+let cachedStops = [];
+
+const getStops = async () => {
+  try {
+    const query = `
+      SELECT *
+      FROM stops
+    `;
+    const response = await pool.query(query);
+    console.log("Cached stops");
+    cachedStops = response.rows;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+getStops();
+
+// return all stops less than 0.2 miles away from user
+router.get("/nearby", async (req, res) => {
+  const { latitude, longitude } = req.query;
+  const userLat = parseFloat(latitude);
+  const userLon = parseFloat(longitude);
+  const nearbyStops = cachedStops
+    .map(stop => {
+      const dist = haversineDistance(
+        userLat,
+        userLon,
+        stop.stop_lat,
+        stop.stop_lon
+      );
+      return { ...stop, dist };
+    })
+    .filter(stop => {
+      return stop.dist <= 0.2;
+    })
+    .sort((a, b) => a.dist - b.dist);
+
+  res.json(nearbyStops);
+});
 
 router.get("/routes", async (req, res) => {
   try {

@@ -8,7 +8,7 @@ const RouteCard = ({ stop }) => {
   useEffect(() => {
     const fetchPredictions = async () => {
       try {
-        const response = await api.get(`/stop/${stop.id}`);
+        const response = await api.get(`/stop/${stop.stop_id}`);
         setRouteInfo(response.data); // returns the next 3 predictions for each line at a stop
       } catch (error) {
         console.error(error);
@@ -19,14 +19,14 @@ const RouteCard = ({ stop }) => {
 
     const interval = setInterval(fetchPredictions, 30000); // fetch predictions every 30 seconds
     return () => clearInterval(interval);
-  }, [stop.id]);
+  }, [stop.stop_id]);
 
   return (
     <>
       {/* only render one routecard per line, use other 2 predictions to display arrival times */}
       {Object.entries(routeInfo).map(([line, arrivals]) => (
         <div key={line} className="mb-2 rounded-lg bg-white p-4">
-          <h2 className="mb-1 text-lg font-bold">{stop.Name}</h2>
+          <h2 className="mb-1 text-lg font-bold">{stop.stop_name}</h2>
           <h2 className="mb-1 font-bold text-blue-900">
             {arrivals[0].line} {arrivals[0].name}
           </h2>

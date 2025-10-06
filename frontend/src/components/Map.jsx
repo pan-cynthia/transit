@@ -47,10 +47,7 @@ const Map = ({ latitude, longitude, onChange, stops }) => {
           <Popup>You are Here</Popup>
         </Marker>
         {stops.map((stop) => (
-          <Marker
-            key={stop.id}
-            position={[stop.Location.Latitude, stop.Location.Longitude]}
-          >
+          <Marker key={stop.id} position={[stop.stop_lat, stop.stop_lon]}>
             <Popup>{stop.Name}</Popup>
           </Marker>
         ))}
