@@ -12,7 +12,7 @@ const Search = () => {
   const [stops, setStops] = useState([]);
   const [selectedStop, setSelectedStop] = useState('');
 
-  const [isSideBarOpen, setIsSideBarOpen] = useState(true);
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
   useEffect(() => {
     // get all routes
