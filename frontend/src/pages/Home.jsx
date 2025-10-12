@@ -1,28 +1,23 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../components/Loading';
+import { LocationContext } from '../contexts/LocationContext';
 
 const Home = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!navigator.geolocation) {
-      console.log('Geolocation is not supported by your browser.');
-      navigate('/search');
-      return;
-    }
+  const { location, permissionStatus, getLocation } =
+    useContext(LocationContext);
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        navigate('/nearby', { state: { latitude, longitude } });
-      },
-      (error) => {
-        console.log('Error getting user location', error);
-        navigate('/search');
-      }
-    );
-  }, [navigate]);
+  useEffect(() => {
+    if (permissionStatus == 'denied') {
+      navigate('/search');
+    } else if (permissionStatus == 'granted' && location) {
+      navigate('/nearby');
+    } else {
+      getLocation();
+    }
+  }, [navigate, permissionStatus, getLocation, location]);
 
   return (
     <div className="flex h-screen items-center justify-center">

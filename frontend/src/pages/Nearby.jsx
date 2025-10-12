@@ -1,55 +1,26 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
 import api from '../api/axios';
 import Map from '../components/Map';
 import NavBar from '../components/NavBar';
 import NearbyRoutes from '../components/NearbyRoutes';
 import SideBar from '../components/SideBar';
+import { LocationContext } from '../contexts/LocationContext';
 
 const Nearby = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const { latitude, longitude } = location.state || {};
-  const [pinLocation, setPinLocation] = useState(
-    latitude && longitude
-      ? {
-          latitude,
-          longitude,
-        }
-      : null
-  );
+  const { location, setLocation } = useContext(LocationContext);
 
   const [nearbyStops, setNearbyStops] = useState([]);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
-  // if location is empty and location permissions are enabled and pinLocation is empty, get user location
   useEffect(() => {
-    if (!pinLocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setPinLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.log('Error getting user location', error);
-          navigate('/search');
-        }
-      );
-    }
-  }, [navigate, pinLocation]);
-
-  useEffect(() => {
-    if (!pinLocation) return;
+    if (!location) return;
 
     const getNearbyStops = async () => {
       try {
         const response = await api.get('/nearby', {
           params: {
-            latitude: pinLocation.latitude,
-            longitude: pinLocation.longitude,
+            latitude: location.latitude,
+            longitude: location.longitude,
           },
         });
         setNearbyStops(response.data);
@@ -58,11 +29,11 @@ const Nearby = () => {
       }
     };
     getNearbyStops();
-  }, [pinLocation]);
+  }, [location]);
 
   return (
     <>
-      {pinLocation ? (
+      {location ? (
         <div className="flex h-screen">
           <SideBar
             isOpen={isSideBarOpen}
@@ -74,9 +45,9 @@ const Nearby = () => {
               <NearbyRoutes nearbyStops={nearbyStops} />
               <div className="w-3/5 bg-white p-5">
                 <Map
-                  latitude={pinLocation.latitude}
-                  longitude={pinLocation.longitude}
-                  onChange={setPinLocation}
+                  latitude={location.latitude}
+                  longitude={location.longitude}
+                  onChange={setLocation}
                   stops={nearbyStops}
                 ></Map>
               </div>
