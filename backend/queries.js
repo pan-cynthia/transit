@@ -71,12 +71,31 @@ router.get("/trips/:routeId", async (req, res) => {
   }
 
   try {
+    /*
+       compute count of trips for each direction and headsign pair
+       keep headsign with highest trip count for each direction
+       order directions alphabetically
+    */
     const query = `
-      SELECT DISTINCT direction_id, MIN(trip_headsign) AS trip_headsign
-      FROM trips
-      WHERE route_id = $1
-      GROUP BY direction_id
-      ORDER BY direction_id
+      WITH trip_counts AS (
+        SELECT
+          direction_id,
+          trip_headsign,
+          COUNT(*) AS trip_count
+        FROM trips
+        WHERE route_id = $1
+        GROUP BY direction_id, trip_headsign
+      ),
+      headsigns AS (
+        SELECT DISTINCT ON (direction_id)
+          direction_id,
+	        trip_headsign,
+	        trip_count
+        FROM trip_counts
+        ORDER BY direction_id, trip_count DESC, trip_headsign ASC
+      )
+      SELECT * FROM headsigns
+      ORDER BY trip_headsign ASC;
     `;
     const response = await pool.query(query, [routeId]);
     res.json(response.rows);
