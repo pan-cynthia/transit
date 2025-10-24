@@ -1,5 +1,6 @@
 import express from "express";
 import pool from "./db.js";
+import { directionOverrides } from "./directionOverrides.js";
 import { haversineDistance } from "./distance.js";
 
 const router = express.Router();
@@ -63,6 +64,12 @@ router.get("/routes", async (req, res) => {
 
 router.get("/trips/:routeId", async (req, res) => {
   const { routeId } = req.params;
+
+  // use direction override if available
+  if (directionOverrides[routeId]) {
+    return res.json(directionOverrides[routeId]);
+  }
+
   try {
     const query = `
       SELECT DISTINCT direction_id, MIN(trip_headsign) AS trip_headsign
