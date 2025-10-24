@@ -137,7 +137,11 @@ const Search = () => {
         <NavBar />
         {displayResults ? (
           <>
-            <RouteCard key={selectedStop.stop_id} stop={selectedStop} />
+            <RouteCard
+              key={selectedStop.stop_id}
+              stop={selectedStop}
+              route={selectedRoute}
+            />
           </>
         ) : (
           <>

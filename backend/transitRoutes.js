@@ -5,6 +5,8 @@ const app = express.Router();
 
 app.get("/stop/:stopId", async (req, res) => {
   const { stopId } = req.params;
+  const { routeId } = req.query; // optional filter
+
   try {
     const response = await axios.get(
       "https://api.511.org/transit/stopMonitoring",
@@ -30,7 +32,13 @@ app.get("/stop/:stopId", async (req, res) => {
       };
     });
 
-    const groups = arrivals.reduce((accumulator, arrival) => {
+    // if routeId is provided, only display predictions for selected route at stop
+    // otherwise, display all predictions for all routes at stop
+    const filteredArrivals = routeId
+      ? arrivals.filter(arrival => arrival.line === routeId)
+      : arrivals;
+
+    const groups = filteredArrivals.reduce((accumulator, arrival) => {
       const line = arrival.line;
       if (!accumulator[line]) {
         accumulator[line] = []; // create new group

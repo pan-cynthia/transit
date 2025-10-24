@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import PredictionItem from './PredictionItem';
 
-const RouteCard = ({ stop }) => {
+const RouteCard = ({ stop, route }) => {
   const [routeInfo, setRouteInfo] = useState({});
 
   useEffect(() => {
     const fetchPredictions = async () => {
+      const params = route ? { routeId: route.route_id } : {};
       try {
-        const response = await api.get(`/stop/${stop.stop_id}`);
+        const response = await api.get(`/stop/${stop.stop_id}`, { params });
         setRouteInfo(response.data); // returns the next 3 predictions for each line at a stop
       } catch (error) {
         console.error(error);
@@ -19,7 +20,7 @@ const RouteCard = ({ stop }) => {
 
     const interval = setInterval(fetchPredictions, 30000); // fetch predictions every 30 seconds
     return () => clearInterval(interval);
-  }, [stop.stop_id]);
+  }, [stop, route]);
 
   return (
     <>
