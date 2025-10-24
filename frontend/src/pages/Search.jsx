@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import api from '../api/axios';
 import DropDown from '../components/DropDown';
 import NavBar from '../components/NavBar';
@@ -15,6 +16,8 @@ const Search = () => {
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const [displayResults, setDisplayResults] = useState(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     // get all routes
@@ -64,17 +67,51 @@ const Search = () => {
     getStops();
   }, [selectedRoute, selectedDirection]);
 
+  useEffect(() => {
+    const routeId = searchParams.get('route');
+    const directionId = searchParams.get('direction');
+    const stopId = searchParams.get('stop');
+
+    if (!routeId || !directionId || !stopId) {
+      // no query params
+      return;
+    }
+
+    // only have ids, need full objects
+    const routeObj = routes.find((r) => r.route_id === routeId);
+    if (routeObj) setSelectedRoute(routeObj);
+
+    const directionObj = directions.find(
+      (d) => String(d.direction_id) === directionId
+    );
+    if (directionObj) setSelectedDirection(directionObj);
+
+    const stopObj = stops.find((s) => String(s.stop_id) === stopId);
+    if (stopObj) setSelectedStop(stopObj);
+
+    if (routeObj && directionObj && stopObj) {
+      setDisplayResults(true);
+    }
+  }, [searchParams, routes, directions, stops]);
+
   const getPrediction = async () => {
     if (!selectedRoute || !selectedDirection || !selectedStop) return;
+
+    setSearchParams({
+      route: selectedRoute.route_id,
+      direction: selectedDirection.direction_id,
+      stop: selectedStop.stop_id,
+    });
 
     setDisplayResults(true);
   };
 
   const handleSearchClick = () => {
+    setSearchParams({});
     setDisplayResults(false);
     setSelectedRoute(routes[0] || null);
-    setSelectedDirection(null);
-    setSelectedStop(null);
+    setSelectedDirection(directions[0] || null);
+    setSelectedStop(stops[0] || null);
   };
 
   return (
