@@ -49,7 +49,6 @@ const Search = () => {
   useEffect(() => {
     if (!selectedRoute || !selectedDirection) return;
     // get all stops for selected route and direction
-    console.log('direction:', selectedDirection);
     const getStops = async () => {
       try {
         const response = await api.get(
@@ -71,11 +70,19 @@ const Search = () => {
     setDisplayResults(true);
   };
 
+  const handleSearchClick = () => {
+    setDisplayResults(false);
+    setSelectedRoute(routes[0] || null);
+    setSelectedDirection(null);
+    setSelectedStop(null);
+  };
+
   return (
     <>
       <SideBar
         isOpen={isSideBarOpen}
         toggle={() => setIsSideBarOpen(!isSideBarOpen)}
+        onSearchClick={handleSearchClick}
       />
       <div className={`${isSideBarOpen ? 'ml-64' : 'ml-16'}`}>
         <NavBar />
