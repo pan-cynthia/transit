@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../api/axios';
 import DropDown from '../components/DropDown';
+import Loading from '../components/Loading';
 import NavBar from '../components/NavBar';
 import RouteCard from '../components/RouteCard';
 import SideBar from '../components/SideBar';
@@ -18,6 +19,7 @@ const Search = () => {
   const [displayResults, setDisplayResults] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // get all routes
@@ -74,6 +76,7 @@ const Search = () => {
 
     if (!routeId || !directionId || !stopId) {
       // no query params
+      setIsLoading(false);
       return;
     }
 
@@ -91,6 +94,7 @@ const Search = () => {
 
     if (routeObj && directionObj && stopObj) {
       setDisplayResults(true);
+      setIsLoading(false);
     }
   }, [searchParams, routes, directions, stops]);
 
@@ -105,6 +109,14 @@ const Search = () => {
 
     setDisplayResults(true);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
 
   const handleSearchClick = () => {
     setSearchParams({});
