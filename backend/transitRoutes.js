@@ -27,16 +27,19 @@ app.get("/stop/:stopId", async (req, res) => {
       return {
         line: journey.LineRef,
         name: journey.PublishedLineName,
+        origin: journey.OriginName,
         destination: journey.DestinationName,
         time: journey.MonitoredCall.ExpectedArrivalTime
       };
     });
 
+    const validArrivals = arrivals.filter(arrival => arrival.time !== null);
+
     // if routeId is provided, only display predictions for selected route at stop
     // otherwise, display all predictions for all routes at stop
     const filteredArrivals = routeId
-      ? arrivals.filter(arrival => arrival.line === routeId)
-      : arrivals;
+      ? validArrivals.filter(arrival => arrival.line === routeId)
+      : validArrivals;
 
     const groups = filteredArrivals.reduce((accumulator, arrival) => {
       const line = arrival.line;
