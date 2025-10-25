@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 
 const DropDown = ({
@@ -10,14 +10,26 @@ const DropDown = ({
   getOptionLabel,
 }) => {
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const selectedLabel =
     typeof value === 'object' && value !== null
       ? getOptionLabel(value)
       : 'Select an Option';
 
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, []);
+
   return (
-    <div className="relative">
+    <div ref={dropdownRef} className="relative">
       <button
         onClick={() => setOpen((prev) => !prev)}
         className="flex w-full items-center justify-between rounded-md px-4 py-2"
