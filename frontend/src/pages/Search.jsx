@@ -145,54 +145,56 @@ const Search = () => {
           </>
         ) : (
           <>
-            <div className="mx-auto flex h-[calc(100vh-64px)] w-[80%] flex-col justify-center">
-              <div className="flex h-[80vh] flex-col items-center rounded-xl border-2 border-amber-200 bg-amber-100">
-                <h2 className="mt-7 p-5 text-xl font-medium">
+            <div className="flex h-[calc(100vh-64px)] items-center justify-center">
+              <div className="flex h-[80vh] w-full max-w-xl flex-col items-center rounded-xl bg-white shadow-sm">
+                <h2 className="mt-15 mb-7 text-xl font-medium">
                   Find Stop by Route
                 </h2>
-                <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
-                  <label className="font-medium">Route</label>
-                  <DropDown
-                    options={routes}
-                    value={selectedRoute}
-                    onChange={setSelectedRoute}
-                    getOptionKey={(route) => route.route_id}
-                    getOptionValue={(route) => route.route_id}
-                    getOptionLabel={(route) =>
-                      `${route.route_short_name} ${route.route_long_name}`
-                    }
-                  />
+                <div className="mt-5 w-full divide-y divide-gray-200 px-10">
+                  <div className="mb-5 flex flex-col">
+                    <label className="mb-2 font-medium">Route</label>
+                    <DropDown
+                      options={routes}
+                      value={selectedRoute}
+                      onChange={setSelectedRoute}
+                      getOptionKey={(route) => route.route_id}
+                      getOptionValue={(route) => route.route_id}
+                      getOptionLabel={(route) =>
+                        `${route.route_short_name} ${route.route_long_name}`
+                      }
+                    />
+                  </div>
+                  <div className="mb-5 flex flex-col">
+                    <label className="mb-2 font-medium">Direction</label>
+                    <DropDown
+                      options={directions}
+                      value={selectedDirection}
+                      onChange={setSelectedDirection}
+                      getOptionKey={(direction) => direction.direction_id}
+                      getOptionValue={(direction) =>
+                        String(direction.direction_id)
+                      }
+                      getOptionLabel={(direction) => direction.trip_headsign}
+                    />
+                  </div>
+                  <div className="mb-5 flex flex-col">
+                    <label className="mb-2 font-medium">Stop</label>
+                    <DropDown
+                      options={stops}
+                      value={selectedStop}
+                      onChange={setSelectedStop}
+                      getOptionKey={(stop) => stop.stop_id}
+                      getOptionValue={(stop) => stop.stop_id}
+                      getOptionLabel={(stop) => stop.stop_name}
+                    />
+                  </div>
+                  <button
+                    className="mt-7 w-full cursor-pointer rounded-xl bg-amber-200 p-3 font-medium hover:bg-amber-300"
+                    onClick={getPrediction}
+                  >
+                    Search
+                  </button>
                 </div>
-                <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
-                  <label className="font-medium">Direction</label>
-                  <DropDown
-                    options={directions}
-                    value={selectedDirection}
-                    onChange={setSelectedDirection}
-                    getOptionKey={(direction) => direction.direction_id}
-                    getOptionValue={(direction) =>
-                      String(direction.direction_id)
-                    }
-                    getOptionLabel={(direction) => direction.trip_headsign}
-                  />
-                </div>
-                <div className="mt-7 flex w-3/4 justify-between rounded-xl bg-amber-200 p-5">
-                  <label className="font-medium">Stop</label>
-                  <DropDown
-                    options={stops}
-                    value={selectedStop}
-                    onChange={setSelectedStop}
-                    getOptionKey={(stop) => stop.stop_id}
-                    getOptionValue={(stop) => stop.stop_id}
-                    getOptionLabel={(stop) => stop.stop_name}
-                  />
-                </div>
-                <button
-                  className="mt-7 w-25 cursor-pointer rounded-xl bg-amber-200 p-5 font-medium"
-                  onClick={getPrediction}
-                >
-                  Search
-                </button>
               </div>
             </div>
           </>

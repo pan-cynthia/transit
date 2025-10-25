@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { RiArrowDropDownLine } from 'react-icons/ri';
+
 const DropDown = ({
   options,
   value,
@@ -6,27 +9,39 @@ const DropDown = ({
   getOptionValue,
   getOptionLabel,
 }) => {
-  const selectedValue =
+  const [open, setOpen] = useState(false);
+
+  const selectedLabel =
     typeof value === 'object' && value !== null
-      ? getOptionValue(value)
-      : value || '';
+      ? getOptionLabel(value)
+      : 'Select an Option';
 
   return (
-    <select
-      value={selectedValue}
-      onChange={(e) => {
-        const selected = options.find(
-          (option) => getOptionValue(option) === e.target.value
-        );
-        onChange(selected || null);
-      }}
-    >
-      {options.map((option) => (
-        <option key={getOptionKey(option)} value={getOptionValue(option)}>
-          {getOptionLabel(option)}
-        </option>
-      ))}
-    </select>
+    <div className="relative">
+      <button
+        onClick={() => setOpen((prev) => !prev)}
+        className="flex w-full items-center justify-between rounded-md px-4 py-2"
+      >
+        <span className="truncate">{selectedLabel}</span>
+        <RiArrowDropDownLine size={25} />
+      </button>
+      {open && (
+        <ul className="absolute z-5 mt-2 max-h-60 w-full overflow-auto rounded-md bg-white shadow-lg">
+          {options.map((option) => (
+            <li
+              key={getOptionKey(option)}
+              onClick={() => {
+                onChange(option); // set selected route, direction, or stop depending on which dropdown
+                setOpen(false); // close dropdown menu
+              }}
+              className={`cursor-pointer px-4 py-2 ${getOptionValue(option) === getOptionValue(value) ? 'bg-[#9CCC65] font-medium text-[#1f3509]' : 'hover:bg-[#9CCC65]'}`}
+            >
+              {getOptionLabel(option)}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
 
