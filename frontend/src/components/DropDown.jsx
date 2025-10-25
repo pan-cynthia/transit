@@ -35,7 +35,10 @@ const DropDown = ({
         className="flex w-full items-center justify-between rounded-md px-4 py-2"
       >
         <span className="truncate">{selectedLabel}</span>
-        <RiArrowDropDownLine size={25} />
+        <RiArrowDropDownLine
+          size={25}
+          className={`${open ? 'rotate-180' : ''}`}
+        />
       </button>
       {open && (
         <ul className="absolute z-5 mt-2 max-h-60 w-full overflow-auto rounded-md bg-white shadow-lg">
