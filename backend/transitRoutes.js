@@ -29,7 +29,8 @@ app.get("/stop/:stopId", async (req, res) => {
         name: journey.PublishedLineName,
         origin: journey.OriginName,
         destination: journey.DestinationName,
-        time: journey.MonitoredCall.ExpectedArrivalTime
+        time: journey.MonitoredCall.ExpectedArrivalTime,
+        direction: journey.DirectionRef
       };
     });
 
@@ -100,7 +101,7 @@ app.get("/lines", async (req, res) => {
 
     res.json(sortedLines);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(400).json({ error: "Failed to fetch lines" });
   }
 });
