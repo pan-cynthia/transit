@@ -4,7 +4,7 @@ import api from '../api/axios';
 import PredictionItem from './PredictionItem';
 
 const RouteCard = ({ stop, route, isClickDisabled }) => {
-  const [routeInfo, setRouteInfo] = useState({});
+  const [predictions, setPredictions] = useState({});
 
   const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ const RouteCard = ({ stop, route, isClickDisabled }) => {
       const params = route ? { routeId: route.route_id } : {};
       try {
         const response = await api.get(`/stop/${stop.stop_id}`, { params });
-        setRouteInfo(response.data); // returns the next 3 predictions for each line at a stop
+        setPredictions(response.data); // returns the next 3 predictions for each line at a stop
       } catch (error) {
         console.error(error);
       }
@@ -27,7 +27,7 @@ const RouteCard = ({ stop, route, isClickDisabled }) => {
 
   const handleClick = (line) => {
     if (!line) return;
-    const direction = routeInfo[line][0].direction;
+    const direction = predictions[line][0].direction;
     navigate(`/route/${line}/${direction}/${stop.stop_id}`, {
       state: { stop: stop },
     });
@@ -36,7 +36,7 @@ const RouteCard = ({ stop, route, isClickDisabled }) => {
   return (
     <>
       {/* only render one routecard per line, use other 2 predictions to display arrival times */}
-      {Object.entries(routeInfo).map(([line, arrivals]) => (
+      {Object.entries(predictions).map(([line, arrivals]) => (
         <div
           key={line}
           className={`mb-2 rounded-lg bg-white p-4 ${isClickDisabled ? '' : 'cursor-pointer'}`}
