@@ -10,7 +10,7 @@ const PredictionItem = ({ time }) => {
 
   return (
     <div className="mr-2 w-17 rounded bg-amber-200 p-2 text-center text-sm font-medium">
-      <span>{formatTime(time)}</span>
+      <span>{time === '--' ? time : formatTime(time)}</span>
     </div>
   );
 };
