@@ -21,7 +21,12 @@ const RouteDetail = () => {
       />
       <div className={`w-full ${isSideBarOpen ? 'ml-64' : 'ml-16'}`}>
         <NavBar />
-        <RouteCard key={stopId} stop={stop} route={route} />
+        <RouteCard
+          key={stopId}
+          stop={stop}
+          route={route}
+          isClickDisabled={true}
+        />
       </div>
     </div>
   );

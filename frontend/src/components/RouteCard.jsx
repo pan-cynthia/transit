@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import PredictionItem from './PredictionItem';
 
-const RouteCard = ({ stop, route }) => {
+const RouteCard = ({ stop, route, isClickDisabled }) => {
   const [routeInfo, setRouteInfo] = useState({});
 
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const RouteCard = ({ stop, route }) => {
       {Object.entries(routeInfo).map(([line, arrivals]) => (
         <div
           key={line}
-          className={`mb-2 rounded-lg bg-white p-4`}
+          className={`mb-2 rounded-lg bg-white p-4 ${isClickDisabled ? '' : 'cursor-pointer'}`}
           onClick={() => handleClick(line)}
         >
           <h2 className="mb-1 text-lg font-bold">{stop.stop_name}</h2>

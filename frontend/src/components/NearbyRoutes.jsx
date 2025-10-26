@@ -6,7 +6,13 @@ const NearbyRoutes = ({ nearbyStops }) => {
       {Object.keys(nearbyStops).length > 0 ? (
         <>
           {nearbyStops.map((stop) => {
-            return <RouteCard key={stop.stop_id} stop={stop} />;
+            return (
+              <RouteCard
+                key={stop.stop_id}
+                stop={stop}
+                isClickDisabled={false}
+              />
+            );
           })}
         </>
       ) : (
