@@ -72,7 +72,6 @@ const Search = () => {
       `/route/${selectedRoute.route_id}/${selectedDirection.direction_id}/${selectedStop.stop_id}`,
       {
         state: {
-          route: selectedRoute.route_id,
           stop: selectedStop,
         },
       }

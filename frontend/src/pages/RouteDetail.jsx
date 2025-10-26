@@ -1,17 +1,34 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
+import api from '../api/axios';
+import Loading from '../components/Loading';
 import NavBar from '../components/NavBar';
 import RouteCard from '../components/RouteCard';
 import SideBar from '../components/SideBar';
 
 const RouteDetail = () => {
-  const { stopId } = useParams();
+  const { routeId, directionId, stopId } = useParams();
   const { state } = useLocation();
 
-  const stop = state?.stop;
-  const route = state?.route;
+  const [stop, setStop] = useState(state?.stop);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+
+  useEffect(() => {
+    // if stop is undefined, need to get stop object by calling /stops/:stopId endpoint
+    const fetchStopData = async () => {
+      try {
+        const response = await api.get(`/stops/${routeId}/${directionId}`);
+        setStop(response.data.find((s) => s.stop_id === stopId));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (!stop) {
+      fetchStopData();
+    }
+  }, [stop, routeId, directionId, stopId]);
 
   return (
     <div className="flex h-screen">
@@ -21,12 +38,18 @@ const RouteDetail = () => {
       />
       <div className={`w-full ${isSideBarOpen ? 'ml-64' : 'ml-16'}`}>
         <NavBar />
-        <RouteCard
-          key={stopId}
-          stop={stop}
-          route={route}
-          isClickDisabled={true}
-        />
+        {stop ? (
+          <RouteCard
+            key={stopId}
+            stop={stop}
+            routeId={routeId}
+            isClickDisabled={true}
+          />
+        ) : (
+          <div className="flex h-screen items-center justify-center">
+            <Loading />
+          </div>
+        )}
       </div>
     </div>
   );

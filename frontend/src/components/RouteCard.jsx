@@ -3,14 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import PredictionItem from './PredictionItem';
 
-const RouteCard = ({ stop, route, isClickDisabled }) => {
+const RouteCard = ({ stop, routeId, isClickDisabled }) => {
   const [predictions, setPredictions] = useState({});
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!stop) return;
+
     const fetchPredictions = async () => {
-      const params = route ? { routeId: route.route_id } : {};
+      const params = routeId ? { routeId } : {};
       try {
         const response = await api.get(`/stop/${stop.stop_id}`, { params });
         setPredictions(response.data); // returns the next 3 predictions for each line at a stop
@@ -23,9 +25,10 @@ const RouteCard = ({ stop, route, isClickDisabled }) => {
 
     const interval = setInterval(fetchPredictions, 30000); // fetch predictions every 30 seconds
     return () => clearInterval(interval);
-  }, [stop, route]);
+  }, [stop, routeId]);
 
   const handleClick = (line) => {
+    if (isClickDisabled) return;
     if (!line) return;
     const direction = predictions[line][0].direction;
     navigate(`/route/${line}/${direction}/${stop.stop_id}`, {
