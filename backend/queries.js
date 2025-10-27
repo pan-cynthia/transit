@@ -139,4 +139,19 @@ router.get("/stops/:routeId/:directionId", async (req, res) => {
   }
 });
 
+router.get("/shapes/:shapeId", async (req, res) => {
+  const { shapeId } = req.params;
+
+  try {
+    const query = `
+      SELECT * FROM shapes
+      WHERE shape_id = $1
+    `;
+    const response = await pool.query(query, [shapeId]);
+    res.json(response.rows);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 export default router;
