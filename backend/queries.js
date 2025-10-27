@@ -96,15 +96,17 @@ router.get("/trips/:routeId", async (req, res) => {
         SELECT
           direction_id,
           trip_headsign,
+          shape_id,
           COUNT(*) AS trip_count
         FROM trips
         WHERE route_id = $1
-        GROUP BY direction_id, trip_headsign
+        GROUP BY direction_id, trip_headsign, shape_id
       ),
       headsigns AS (
         SELECT DISTINCT ON (direction_id)
           direction_id,
 	        trip_headsign,
+          shape_id,
 	        trip_count
         FROM trip_counts
         ORDER BY direction_id, trip_count DESC, trip_headsign ASC
