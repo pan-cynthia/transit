@@ -77,7 +77,7 @@ router.get("/routes", async (req, res) => {
   }
 });
 
-router.get("/trips/:routeId", async (req, res) => {
+router.get("/directions/:routeId", async (req, res) => {
   const { routeId } = req.params;
 
   // use direction override if available

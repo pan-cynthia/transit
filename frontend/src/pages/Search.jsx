@@ -36,7 +36,7 @@ const Search = () => {
     // get all directions for selected route
     const getDirections = async () => {
       try {
-        const response = await api.get(`/trips/${selectedRoute.route_id}`);
+        const response = await api.get(`/directions/${selectedRoute.route_id}`);
         setDirections(response.data);
         setSelectedDirection(response.data[0]); // set default direction
       } catch (error) {
