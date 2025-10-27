@@ -1,8 +1,38 @@
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { useEffect, useState } from 'react';
+import {
+  MapContainer,
+  Marker,
+  Polyline,
+  Popup,
+  TileLayer,
+} from 'react-leaflet';
+import api from '../api/axios';
 
-const RouteMap = ({ stop }) => {
+const RouteMap = ({ stop, direction }) => {
   const latitude = parseFloat(stop.stop_lat);
   const longitude = parseFloat(stop.stop_lon);
+
+  const shapeId = direction.shape_id;
+
+  const [shapes, setShapes] = useState([]);
+
+  useEffect(() => {
+    const fetchShapeData = async () => {
+      try {
+        const response = await api.get(`/shapes/${shapeId}`);
+        setShapes(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchShapeData();
+  }, [shapeId]);
+
+  const polyline = shapes.map((s) => [
+    parseFloat(s.shape_pt_lat),
+    parseFloat(s.shape_pt_lon),
+  ]);
 
   return (
     <>
@@ -18,6 +48,7 @@ const RouteMap = ({ stop }) => {
         <Marker position={[latitude, longitude]}>
           <Popup>{stop.stop_name}</Popup>
         </Marker>
+        <Polyline pathOptions={{ color: 'red' }} positions={polyline} />
       </MapContainer>
     </>
   );
