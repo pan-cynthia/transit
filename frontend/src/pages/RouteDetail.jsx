@@ -27,24 +27,29 @@ const RouteDetail = () => {
       }
     };
 
+    if (!stop) {
+      fetchStopData();
+    }
+  }, [stop, routeId, directionId, stopId]);
+
+  useEffect(() => {
     const fetchDirectionData = async () => {
       try {
         const response = await api.get(`/directions/${routeId}`);
-        setDirection(response.data);
-        console.log(response.data);
+        setDirection(
+          response.data.find(
+            (d) => Number(d.direction_id) === Number(directionId)
+          )
+        );
       } catch (error) {
         console.error(error);
       }
     };
 
-    if (!stop) {
-      fetchStopData();
-    }
-
     if (!direction) {
       fetchDirectionData();
     }
-  }, [stop, routeId, directionId, stopId, direction]);
+  }, [routeId, direction, directionId]);
 
   return (
     <div className="flex h-screen">

@@ -30,7 +30,7 @@ app.get("/stop/:stopId", async (req, res) => {
         origin: journey.OriginName,
         destination: journey.DestinationName,
         time: journey.MonitoredCall.ExpectedArrivalTime,
-        direction: journey.DirectionRef
+        direction: journey.DirectionRef === "IB" ? 1 : 0
       };
     });
 
@@ -139,5 +139,9 @@ app.get("/patterns/:lineId", async (req, res) => {
     }))
   );
 });
+
+// app.get("/vehicle/:vehicleId", async (req, res) => {
+
+// });
 
 export default app;

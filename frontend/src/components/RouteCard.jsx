@@ -32,7 +32,7 @@ const RouteCard = ({ stop, routeId, isClickDisabled }) => {
     if (!line) return;
     const direction = predictions[line][0].direction;
     navigate(`/route/${line}/${direction}/${stop.stop_id}`, {
-      state: { stop: stop, direction: direction },
+      state: { stop: stop },
     });
   };
 
