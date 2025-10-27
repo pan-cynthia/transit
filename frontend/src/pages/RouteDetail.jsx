@@ -11,6 +11,7 @@ const RouteDetail = () => {
   const { state } = useLocation();
 
   const [stop, setStop] = useState(state?.stop);
+  const [direction, setDirection] = useState(state?.direction);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
@@ -25,10 +26,24 @@ const RouteDetail = () => {
       }
     };
 
+    const fetchDirectionData = async () => {
+      try {
+        const response = await api.get(`/directions/${routeId}`);
+        setDirection(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     if (!stop) {
       fetchStopData();
     }
-  }, [stop, routeId, directionId, stopId]);
+
+    if (!direction) {
+      fetchDirectionData();
+    }
+  }, [stop, routeId, directionId, stopId, direction]);
 
   return (
     <div className="flex h-screen">
@@ -38,7 +53,7 @@ const RouteDetail = () => {
       />
       <div className={`w-full ${isSideBarOpen ? 'ml-64' : 'ml-16'}`}>
         <NavBar />
-        {stop ? (
+        {stop && direction ? (
           <RouteCard
             key={stopId}
             stop={stop}

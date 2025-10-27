@@ -73,6 +73,7 @@ const Search = () => {
       {
         state: {
           stop: selectedStop,
+          direction: selectedDirection,
         },
       }
     );
