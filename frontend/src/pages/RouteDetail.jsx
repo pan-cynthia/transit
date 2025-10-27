@@ -4,6 +4,7 @@ import api from '../api/axios';
 import Loading from '../components/Loading';
 import NavBar from '../components/NavBar';
 import RouteCard from '../components/RouteCard';
+import RouteMap from '../components/RouteMap';
 import SideBar from '../components/SideBar';
 
 const RouteDetail = () => {
@@ -51,15 +52,20 @@ const RouteDetail = () => {
         isOpen={isSideBarOpen}
         toggle={() => setIsSideBarOpen(!isSideBarOpen)}
       />
-      <div className={`w-full ${isSideBarOpen ? 'ml-64' : 'ml-16'}`}>
+      <div
+        className={`w-full overflow-hidden ${isSideBarOpen ? 'ml-64' : 'ml-16'}`}
+      >
         <NavBar />
         {stop && direction ? (
-          <RouteCard
-            key={stopId}
-            stop={stop}
-            routeId={routeId}
-            isClickDisabled={true}
-          />
+          <>
+            <RouteCard
+              key={stopId}
+              stop={stop}
+              routeId={routeId}
+              isClickDisabled={true}
+            />
+            <RouteMap stop={stop} direction={direction} />
+          </>
         ) : (
           <div className="flex h-screen items-center justify-center">
             <Loading />
