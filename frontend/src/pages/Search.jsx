@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import DropDown from '../components/DropDown';
 import NavBar from '../components/NavBar';
+import RouteCard from '../components/RouteCard';
 import SideBar from '../components/SideBar';
 
 const Search = () => {
@@ -14,8 +14,7 @@ const Search = () => {
   const [selectedStop, setSelectedStop] = useState(null);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-
-  const navigate = useNavigate();
+  const [displayResult, setDisplayResult] = useState(false);
 
   useEffect(() => {
     // get all routes
@@ -67,16 +66,14 @@ const Search = () => {
 
   const getPrediction = async () => {
     if (!selectedRoute || !selectedDirection || !selectedStop) return;
+    setDisplayResult(true);
+  };
 
-    navigate(
-      `/route/${selectedRoute.route_id}/${selectedDirection.direction_id}/${selectedStop.stop_id}`,
-      {
-        state: {
-          stop: selectedStop,
-          direction: selectedDirection,
-        },
-      }
-    );
+  const handleSearchClick = () => {
+    setDisplayResult(false);
+    setSelectedRoute(routes[0] || null);
+    setSelectedDirection(directions[0] || null);
+    setSelectedStop(stops[0] || null);
   };
 
   return (
@@ -84,59 +81,71 @@ const Search = () => {
       <SideBar
         isOpen={isSideBarOpen}
         toggle={() => setIsSideBarOpen(!isSideBarOpen)}
+        onSearchClick={handleSearchClick}
       />
       <div className={`${isSideBarOpen ? 'ml-64' : 'ml-16'}`}>
         <NavBar />
-        <div className="flex h-[calc(100vh-64px)] items-center justify-center">
-          <div className="flex h-[80vh] w-full max-w-xl flex-col items-center rounded-xl bg-white shadow-sm">
-            <h2 className="mt-15 mb-7 text-xl font-medium">
-              Find Stop by Route
-            </h2>
-            <div className="mt-5 w-full divide-y divide-gray-200 px-10">
-              <div className="mb-5 flex flex-col">
-                <label className="mb-2 font-medium">Route</label>
-                <DropDown
-                  options={routes}
-                  value={selectedRoute}
-                  onChange={setSelectedRoute}
-                  getOptionKey={(route) => route.route_id}
-                  getOptionValue={(route) => route.route_id}
-                  getOptionLabel={(route) =>
-                    `${route.route_short_name} ${route.route_long_name}`
-                  }
-                />
+        {displayResult && selectedStop && selectedDirection && selectedRoute ? (
+          <RouteCard
+            key={selectedStop.stop_id}
+            stop={selectedStop}
+            routeId={selectedRoute.route_id}
+            isClickDisabled={false}
+          />
+        ) : (
+          <div className="flex h-[calc(100vh-64px)] items-center justify-center">
+            <div className="flex h-[80vh] w-full max-w-xl flex-col items-center rounded-xl bg-white shadow-sm">
+              <h2 className="mt-15 mb-7 text-xl font-medium">
+                Find Stop by Route
+              </h2>
+              <div className="mt-5 w-full divide-y divide-gray-200 px-10">
+                <div className="mb-5 flex flex-col">
+                  <label className="mb-2 font-medium">Route</label>
+                  <DropDown
+                    options={routes}
+                    value={selectedRoute}
+                    onChange={setSelectedRoute}
+                    getOptionKey={(route) => route.route_id}
+                    getOptionValue={(route) => route.route_id}
+                    getOptionLabel={(route) =>
+                      `${route.route_short_name} ${route.route_long_name}`
+                    }
+                  />
+                </div>
+                <div className="mb-5 flex flex-col">
+                  <label className="mb-2 font-medium">Direction</label>
+                  <DropDown
+                    options={directions}
+                    value={selectedDirection}
+                    onChange={setSelectedDirection}
+                    getOptionKey={(direction) => direction.direction_id}
+                    getOptionValue={(direction) =>
+                      String(direction.direction_id)
+                    }
+                    getOptionLabel={(direction) => direction.trip_headsign}
+                  />
+                </div>
+                <div className="mb-5 flex flex-col">
+                  <label className="mb-2 font-medium">Stop</label>
+                  <DropDown
+                    options={stops}
+                    value={selectedStop}
+                    onChange={setSelectedStop}
+                    getOptionKey={(stop) => stop.stop_id}
+                    getOptionValue={(stop) => stop.stop_id}
+                    getOptionLabel={(stop) => stop.stop_name}
+                  />
+                </div>
+                <button
+                  className="mt-7 w-full cursor-pointer rounded-xl bg-amber-200 p-3 font-medium hover:bg-amber-300"
+                  onClick={getPrediction}
+                >
+                  Search
+                </button>
               </div>
-              <div className="mb-5 flex flex-col">
-                <label className="mb-2 font-medium">Direction</label>
-                <DropDown
-                  options={directions}
-                  value={selectedDirection}
-                  onChange={setSelectedDirection}
-                  getOptionKey={(direction) => direction.direction_id}
-                  getOptionValue={(direction) => String(direction.direction_id)}
-                  getOptionLabel={(direction) => direction.trip_headsign}
-                />
-              </div>
-              <div className="mb-5 flex flex-col">
-                <label className="mb-2 font-medium">Stop</label>
-                <DropDown
-                  options={stops}
-                  value={selectedStop}
-                  onChange={setSelectedStop}
-                  getOptionKey={(stop) => stop.stop_id}
-                  getOptionValue={(stop) => stop.stop_id}
-                  getOptionLabel={(stop) => stop.stop_name}
-                />
-              </div>
-              <button
-                className="mt-7 w-full cursor-pointer rounded-xl bg-amber-200 p-3 font-medium hover:bg-amber-300"
-                onClick={getPrediction}
-              >
-                Search
-              </button>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );
