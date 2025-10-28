@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
+import { usePredictions } from '../../hooks/usePredictions';
 import api from '../api/axios';
 import Loading from '../components/Loading';
 import NavBar from '../components/NavBar';
@@ -15,7 +16,6 @@ const RouteDetail = () => {
   const [direction, setDirection] = useState(state?.direction);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  const vehicleLocations = state?.vehicleLocations;
 
   useEffect(() => {
     // if stop is undefined, need to get stop object by calling /stops/:stopId endpoint
@@ -52,6 +52,26 @@ const RouteDetail = () => {
     }
   }, [routeId, direction, directionId]);
 
+  const { predictions, isLoading } = usePredictions(stop, routeId);
+
+  const vehicleLocations = predictions[routeId]
+    ? predictions[routeId]
+        .map((p) => p.vehicleLocation)
+        .filter((v) => v && v.Latitude && v.Longitude)
+        .map((v) => ({
+          latitude: parseFloat(v.Latitude),
+          longitude: parseFloat(v.Longitude),
+        }))
+    : [];
+
+  if (isLoading || !stop || !direction) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen">
       <SideBar
@@ -62,26 +82,19 @@ const RouteDetail = () => {
         className={`w-full overflow-hidden ${isSideBarOpen ? 'ml-64' : 'ml-16'}`}
       >
         <NavBar />
-        {stop && direction ? (
-          <>
-            <RouteCard
-              key={stopId}
-              stop={stop}
-              routeId={routeId}
-              isClickDisabled={true}
-            />
-            <RouteMap
-              key={stopId}
-              stop={stop}
-              direction={direction}
-              vehicleLocations={vehicleLocations}
-            />
-          </>
-        ) : (
-          <div className="flex h-screen items-center justify-center">
-            <Loading />
-          </div>
-        )}
+        <>
+          <RouteCard
+            key={stopId}
+            stop={stop}
+            routeId={routeId}
+            isClickDisabled={true}
+          />
+          <RouteMap
+            stop={stop}
+            direction={direction}
+            vehicleLocations={vehicleLocations}
+          />
+        </>
       </div>
     </div>
   );

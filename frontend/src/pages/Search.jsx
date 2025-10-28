@@ -90,6 +90,7 @@ const Search = () => {
             key={selectedStop.stop_id}
             stop={selectedStop}
             routeId={selectedRoute.route_id}
+            direction={selectedDirection}
             isClickDisabled={false}
           />
         ) : (

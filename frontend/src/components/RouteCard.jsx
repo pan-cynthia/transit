@@ -1,50 +1,19 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/axios';
+import { usePredictions } from '../../hooks/usePredictions';
 import Loading from './Loading';
 import PredictionItem from './PredictionItem';
 
-const RouteCard = ({ stop, routeId, isClickDisabled }) => {
-  const [predictions, setPredictions] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-
+const RouteCard = ({ stop, routeId, direction, isClickDisabled }) => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!stop) return;
-
-    const fetchPredictions = async () => {
-      setIsLoading(true);
-      const params = routeId ? { routeId } : {};
-      try {
-        const response = await api.get(`/stop/${stop.stop_id}`, { params });
-        setPredictions(response.data); // returns the next 3 predictions for each line at a stop
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPredictions();
-
-    const interval = setInterval(fetchPredictions, 30000); // fetch predictions every 30 seconds
-    return () => clearInterval(interval);
-  }, [stop, routeId]);
+  const { predictions, isLoading } = usePredictions(stop, routeId);
 
   const handleClick = (line) => {
     if (isClickDisabled || !line || !predictions[line]) return;
-    const direction = predictions[line][0].direction;
+    const directionId = predictions[line][0].direction;
 
-    const vehicleLocations = predictions[line]
-      .map((p) => p.vehicleLocation)
-      .filter((v) => v && v.Latitude && v.Longitude)
-      .map((v) => ({
-        latitude: parseFloat(v.Latitude),
-        longitude: parseFloat(v.Longitude),
-      }));
-    navigate(`/route/${line}/${direction}/${stop.stop_id}`, {
-      state: { stop, vehicleLocations },
+    navigate(`/route/${line}/${directionId}/${stop.stop_id}`, {
+      state: { stop, direction },
     });
   };
 
