@@ -30,7 +30,8 @@ app.get("/stop/:stopId", async (req, res) => {
         origin: journey.OriginName,
         destination: journey.DestinationName,
         time: journey.MonitoredCall.ExpectedArrivalTime,
-        direction: journey.DirectionRef === "IB" ? 1 : 0
+        direction: journey.DirectionRef === "IB" ? 1 : 0,
+        vehicleLocation: journey.VehicleLocation
       };
     });
 
