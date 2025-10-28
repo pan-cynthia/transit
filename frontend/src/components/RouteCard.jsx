@@ -35,8 +35,16 @@ const RouteCard = ({ stop, routeId, isClickDisabled }) => {
   const handleClick = (line) => {
     if (isClickDisabled || !line || !predictions[line]) return;
     const direction = predictions[line][0].direction;
+
+    const vehicleLocations = predictions[line]
+      .map((p) => p.vehicleLocation)
+      .filter((v) => v && v.Latitude && v.Longitude)
+      .map((v) => ({
+        latitude: parseFloat(v.Latitude),
+        longitude: parseFloat(v.Longitude),
+      }));
     navigate(`/route/${line}/${direction}/${stop.stop_id}`, {
-      state: { stop },
+      state: { stop, vehicleLocations },
     });
   };
 

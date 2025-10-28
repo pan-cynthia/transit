@@ -15,6 +15,7 @@ const RouteDetail = () => {
   const [direction, setDirection] = useState(state?.direction);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const vehicleLocations = state?.vehicleLocations;
 
   useEffect(() => {
     // if stop is undefined, need to get stop object by calling /stops/:stopId endpoint
@@ -69,7 +70,12 @@ const RouteDetail = () => {
               routeId={routeId}
               isClickDisabled={true}
             />
-            <RouteMap stop={stop} direction={direction} />
+            <RouteMap
+              key={stopId}
+              stop={stop}
+              direction={direction}
+              vehicleLocations={vehicleLocations}
+            />
           </>
         ) : (
           <div className="flex h-screen items-center justify-center">

@@ -8,7 +8,7 @@ import {
 } from 'react-leaflet';
 import api from '../api/axios';
 
-const RouteMap = ({ stop, direction }) => {
+const RouteMap = ({ stop, direction, vehicleLocations }) => {
   const latitude = parseFloat(stop.stop_lat);
   const longitude = parseFloat(stop.stop_lon);
 
@@ -49,6 +49,9 @@ const RouteMap = ({ stop, direction }) => {
           <Popup>{stop.stop_name}</Popup>
         </Marker>
         <Polyline pathOptions={{ color: 'red' }} positions={polyline} />
+        {vehicleLocations.map((v) => (
+          <Marker position={[v.latitude, v.longitude]}></Marker>
+        ))}
       </MapContainer>
     </>
   );
