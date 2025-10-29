@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { usePredictions } from '../../hooks/usePredictions';
 import api from '../api/axios';
 import Loading from '../components/Loading';
@@ -7,6 +7,7 @@ import NavBar from '../components/NavBar';
 import RouteCard from '../components/RouteCard';
 import RouteMap from '../components/RouteMap';
 import SideBar from '../components/SideBar';
+import Error from './Error';
 
 const RouteDetail = () => {
   const { routeId, directionId, stopId } = useParams();
@@ -14,15 +15,23 @@ const RouteDetail = () => {
 
   const [stop, setStop] = useState(state?.stop);
   const [direction, setDirection] = useState(state?.direction);
-
+  const [error, setError] = useState(false);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     // if stop is undefined, need to get stop object by calling /stops/:stopId endpoint
     const fetchStopData = async () => {
       try {
         const response = await api.get(`/stops/${routeId}/${directionId}`);
-        setStop(response.data.find((s) => s.stop_id === stopId));
+        const foundStop = response.data.find((s) => s.stop_id === stopId);
+        if (!foundStop) {
+          // stop doesn't get set if stopId is wrong
+          setError(true);
+        } else {
+          setStop(foundStop);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -37,11 +46,14 @@ const RouteDetail = () => {
     const fetchDirectionData = async () => {
       try {
         const response = await api.get(`/directions/${routeId}`);
-        setDirection(
-          response.data.find(
-            (d) => Number(d.direction_id) === Number(directionId)
-          )
+        const foundDirection = response.data.find(
+          (d) => Number(d.direction_id) === Number(directionId)
         );
+        if (!foundDirection) {
+          setError(true);
+        } else {
+          setDirection(foundDirection);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -63,6 +75,16 @@ const RouteDetail = () => {
           longitude: parseFloat(v.Longitude),
         }))
     : [];
+
+  // redirect to search page on error after 5 seconds
+  useEffect(() => {
+    const timeout = setTimeout(() => navigate('/search'), 5000);
+    return () => clearTimeout(timeout);
+  }, [error, navigate]);
+
+  if (error) {
+    return <Error />;
+  }
 
   if (isLoading || !stop || !direction) {
     return (
