@@ -78,8 +78,10 @@ const RouteDetail = () => {
 
   // redirect to search page on error after 5 seconds
   useEffect(() => {
-    const timeout = setTimeout(() => navigate('/search'), 5000);
-    return () => clearTimeout(timeout);
+    if (error) {
+      const timeout = setTimeout(() => navigate('/search'), 5000);
+      return () => clearTimeout(timeout);
+    }
   }, [error, navigate]);
 
   if (error) {
