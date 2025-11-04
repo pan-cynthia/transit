@@ -9,7 +9,7 @@ import './styles/index.css';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <LocationProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/transit">
         <App />
       </BrowserRouter>
     </LocationProvider>

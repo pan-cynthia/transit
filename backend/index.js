@@ -4,7 +4,12 @@ import express from "express";
 import router from "./queries.js";
 import transitRoutes from "./transitRoutes.js";
 
-dotenv.config();
+dotenv.config({
+  path:
+    process.env.NODE_ENV === "production"
+      ? ".env.production"
+      : ".env.development"
+});
 
 const app = express();
 
