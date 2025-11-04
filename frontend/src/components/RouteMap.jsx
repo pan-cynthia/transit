@@ -46,6 +46,13 @@ const RouteMap = ({ stop, direction, vehicleLocations }) => {
     shadowSize: [41, 41],
   });
 
+  const vehicleIcon = new L.Icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/10981/10981034.png', // bus icon
+    iconSize: [35, 35],
+    iconAnchor: [17, 34],
+    popupAnchor: [0, -30],
+  });
+
   return (
     <>
       <MapContainer
@@ -61,8 +68,12 @@ const RouteMap = ({ stop, direction, vehicleLocations }) => {
           <Popup>{stop.stop_name}</Popup>
         </Marker>
         <Polyline pathOptions={{ color: 'red' }} positions={polyline} />
-        {vehicleLocations.map((v) => (
-          <Marker position={[v.latitude, v.longitude]}></Marker>
+        {vehicleLocations.map((v, i) => (
+          <Marker
+            key={i}
+            position={[v.latitude, v.longitude]}
+            icon={vehicleIcon}
+          ></Marker>
         ))}
       </MapContainer>
     </>
