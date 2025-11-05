@@ -31,4 +31,3 @@ frontend/.env.development
 frontend/.env.production
 backend/.env.development
 backend/.env.production
-*.sql
